@@ -1,15 +1,15 @@
 package api
 
 import (
-	"github.com/parnurzeal/gorequest"
+	"net/http/cookiejar"
 )
 
 func NewClient(email string, password string) ([]error, Client) {
+	cookieJar, _ := cookiejar.New(nil)
 	client := Client{
-		request: gorequest.New(),
+		cookie: cookieJar,
 	}
 	errs := client.authorize(email, password)
 
 	return errs, client
-
 }

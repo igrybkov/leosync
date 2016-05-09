@@ -4,10 +4,10 @@ import (
 	"log"
 
 	"github.com/igrybkov/leosync/src/kindle"
-	"github.com/spf13/cobra"
 	"github.com/igrybkov/leosync/src/lingualeo"
-	path "path/filepath"
+	"github.com/spf13/cobra"
 	"os"
+	path "path/filepath"
 	"strings"
 )
 
