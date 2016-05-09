@@ -31,7 +31,7 @@ func GetTranslations(word string) api.Word {
 }
 
 func AddWordWithTranslation(word string, translation string) []error {
-	errs := getClient().AddWord(word, translation)
+	errs, _ := getClient().AddWord(word, translation)
 	if errs != nil {
 		log.Fatalf("%v \n", errs)
 	}
@@ -44,5 +44,8 @@ func AddWord(word string) {
 		log.Fatalln("Translation not found for word \"" + word + "\"")
 	}
 	translation := translations.Translations[0].Value
-	_ = AddWordWithTranslation(word, translation)
+	errs := AddWordWithTranslation(word, translation)
+	if errs != nil {
+		log.Fatalf("Cannot add word: %v", errs)
+	}
 }
