@@ -1,0 +1,6 @@
+{
+  "name": "Leosync",
+  "tagline": "LeoSync - made learning simplier",
+  "body": "### LeoSync\r\n\r\n[![Build Status](https://travis-ci.org/igrybkov/leosync.svg?branch=master)](https://travis-ci.org/igrybkov/leosync)\r\n\r\nLeoSync is a simple app that allows you import/export words to LinguaLeo using simple command-line interface.",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
