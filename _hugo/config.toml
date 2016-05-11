@@ -4,7 +4,7 @@ title = "LeoSync"
 theme = "hugo-material-docs"
 metadataformat = "yaml"
 canonifyurls = true
-publishdir = "../   "
+publishdir = "../"
 # Enable Google Analytics by entering your tracking id
 googleAnalytics = "UA-77625809-1"
 
@@ -17,6 +17,7 @@ googleAnalytics = "UA-77625809-1"
     # Repository
     provider = "GitHub"
     repo_url = "https://github.com/igrybkov/leosync"
+    download_url = "https://github.com/igrybkov/leosync/releases/latest"
 
     version = "0.0.1"
     logo = "images/logo.png"
