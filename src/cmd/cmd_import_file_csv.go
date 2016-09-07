@@ -2,13 +2,15 @@ package cmd
 
 import (
 	"encoding/csv"
+	"github.com/spf13/cobra"
+	"io"
 	"log"
 	"os"
-	"io"
+	"strconv"
 	"strings"
+	"time"
 
 	leo "github.com/igrybkov/leosync/src/lingualeo"
-	"github.com/spf13/cobra"
 )
 
 var importFileCsvCmd = &cobra.Command{
@@ -20,8 +22,7 @@ var importFileCsvCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 		defer file.Close()
-		
-	
+
 		r := csv.NewReader(file)
 		r.Comma = ';'
 		var word string
@@ -36,13 +37,21 @@ var importFileCsvCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 
+			word = strings.TrimSpace(record[0])
+			translation = strings.TrimSpace(record[1])
 
-		word = strings.TrimSpace(record[0])
-		translation = strings.TrimSpace(record[1])
-		leo.AddWordWithTranslation(word, translation)
-		log.Println("Imported: " + word + " = " + translation)
+			_, result := leo.AddWordWithTranslation(word, translation)
+			log.Println("Imported: " + word + " = " + translation)
+			pic_url := strings.TrimSpace(record[2])
+
+			if len(pic_url) > 5 {
+				leo.DownloadPicture(pic_url, strconv.Itoa(result.TranslateId))
+				log.Println(" (1s wait)     +set picture " + pic_url)
+				time.Sleep(1 * time.Second)
+			}
+
 		}
-	
+
 	},
 }
 

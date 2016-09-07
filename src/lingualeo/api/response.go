@@ -23,6 +23,7 @@ type Word struct {
 	//	Created     time.Time       `json:"created_at"`
 	//	LastUpdated time.Time       `json:"last_updated_at"`
 	Translations []UserTranslate `json:"translate"`
+	TranslateId  int             `json:"translate_id"`
 	SoundUrl     string          `json:"sound_url"`
 	PictureUrl   string          `json:"pic_url"`
 }
