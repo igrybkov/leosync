@@ -131,7 +131,7 @@ func (c Client) AddWordWithContext(word, translation string, context string) ([]
 	req := AddWordWithContextRequest{
 		Word:        word,
 		Translation: translation,
-		Context: context,
+		Context:     context,
 	}
 
 	var result Word
