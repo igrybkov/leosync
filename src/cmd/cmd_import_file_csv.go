@@ -27,6 +27,7 @@ var importFileCsvCmd = &cobra.Command{
 		r.Comma = ';'
 		var word string
 		var translation string
+		var context string
 
 		for {
 			record, err := r.Read()
@@ -39,15 +40,20 @@ var importFileCsvCmd = &cobra.Command{
 
 			word = strings.TrimSpace(record[0])
 			translation = strings.TrimSpace(record[1])
+			context = strings.TrimSpace(record[4])
 
-			_, result := leo.AddWordWithTranslation(word, translation)
+			_, result := leo.AddWordWithTranslationAndContext(word, translation, context)
 			log.Println("Imported: " + word + " = " + translation)
-			pic_url := strings.TrimSpace(record[2])
 
+			if context != "" {
+				log.Println("+context: " + context)
+			}
+
+			pic_url := strings.TrimSpace(record[2])
 			if len(pic_url) > 5 {
 				leo.DownloadPicture(pic_url, strconv.Itoa(result.TranslateId))
-				log.Println(" (1s wait)     +set picture " + pic_url)
-				time.Sleep(1 * time.Second)
+				log.Println("+picture: " + pic_url)
+				time.Sleep(1 * time.Second) //anti-ban delay :)
 			}
 
 		}

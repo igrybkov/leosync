@@ -30,12 +30,12 @@ func GetTranslations(word string) api.Word {
 	return translations
 }
 
-func AddWordWithTranslation(word string, translation string) ([]error, api.Word) {
-	errs, result := getClient().AddWord(word, translation)
+func AddWordWithTranslation(word string, translation string) []error {
+	errs, _ := getClient().AddWord(word, translation)
 	if errs != nil {
 		log.Fatalf("%v \n", errs)
 	}
-	return errs, result
+	return errs
 }
 
 func AddWord(word string) {
@@ -44,10 +44,18 @@ func AddWord(word string) {
 		log.Fatalln("Translation not found for word \"" + word + "\"")
 	}
 	translation := translations.Translations[0].Value
-	errs, _ := AddWordWithTranslation(word, translation)
+	errs := AddWordWithTranslation(word, translation)
 	if errs != nil {
 		log.Fatalf("Cannot add word: %v", errs)
 	}
+}
+
+func AddWordWithTranslationAndContext(word string, translation string, context string) ([]error, api.Word) {
+	errs, result := getClient().AddWordWithContext(word, translation, context)
+	if errs != nil {
+		log.Fatalf("%v \n", errs)
+	}
+	return errs, result
 }
 
 func DownloadPicture(url string, translate_id string) {

@@ -126,3 +126,19 @@ func (c Client) AddWord(word, translation string) ([]error, Word) {
 
 	return errs, result
 }
+
+func (c Client) AddWordWithContext(word, translation string, context string) ([]error, Word) {
+	req := AddWordWithContextRequest{
+		Word:        word,
+		Translation: translation,
+		Context: context,
+	}
+
+	var result Word
+	errs := c.get(addWordUrl, req, &result)
+	if strings.TrimSpace(result.ErrorMsg) != "" {
+		errs = append(errs, errors.New("Something went wrong: "+result.ErrorMsg))
+	}
+
+	return errs, result
+}
