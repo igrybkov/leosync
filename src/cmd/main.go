@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gosuri/cmdns"
+	cmdns "github.com/igrybkov/cmdns"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
