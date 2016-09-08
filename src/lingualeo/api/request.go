@@ -13,3 +13,9 @@ type AddWordRequest struct {
 	Word        string `url:"word"`
 	Translation string `url:"tword"`
 }
+
+type AddWordWithContextRequest struct {
+	Word        string `url:"word"`
+	Translation string `url:"tword"`
+	Context string `url:"context"`
+}

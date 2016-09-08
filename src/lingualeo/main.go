@@ -49,3 +49,18 @@ func AddWord(word string) {
 		log.Fatalf("Cannot add word: %v", errs)
 	}
 }
+
+func AddWordWithTranslationAndContext(word string, translation string, context string) ([]error, api.Word) {
+	errs, result := getClient().AddWordWithContext(word, translation, context)
+	if errs != nil {
+		log.Fatalf("%v \n", errs)
+	}
+	return errs, result
+}
+
+func DownloadPicture(url string, translate_id string) {
+	errs := getClient().DownloadPicture(url, translate_id)
+	if errs != nil {
+		log.Fatalf("Cannot set picture: %v", errs)
+	}
+}
