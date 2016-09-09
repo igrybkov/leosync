@@ -5,7 +5,7 @@ import (
 
 	"bufio"
 	"fmt"
-	"github.com/igrybkov/leosync/src/configuration"
+	"github.com/igrybkov/leosync/config"
 	home "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -21,14 +21,14 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 
-		config := configuration.GetConfig()
+		configuration := config.GetConfig()
 
 		file := cfgFile
 
 		if strings.TrimSpace(file) == "" {
 			file = viper.ConfigFileUsed()
 			if strings.TrimSpace(file) == "" {
-				log.Fatalf("Configuration file not found")
+				log.Fatal("Configuration file not found")
 			}
 		}
 		file, err = home.Expand(file)
@@ -53,10 +53,10 @@ var initCmd = &cobra.Command{
 			return result
 		}
 
-		config.LinguaLeo.Email = getInputValue("LinguaLeo email", config.LinguaLeo.Email)
-		config.LinguaLeo.Password = getInputValue("LinguaLeo password", config.LinguaLeo.Password)
+		configuration.LinguaLeo.Email = getInputValue("LinguaLeo email", configuration.LinguaLeo.Email)
+		configuration.LinguaLeo.Password = getInputValue("LinguaLeo password", configuration.LinguaLeo.Password)
 
-		b, err := yaml.Marshal(config)
+		b, err := yaml.Marshal(configuration)
 		if err != nil {
 			log.Fatalln(err.Error())
 		}

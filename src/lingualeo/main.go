@@ -1,7 +1,7 @@
 package lingualeo
 
 import (
-	"github.com/igrybkov/leosync/src/configuration"
+	"github.com/igrybkov/leosync/config"
 	"github.com/igrybkov/leosync/src/lingualeo/api"
 	"log"
 )
@@ -12,7 +12,7 @@ func getClient() api.Client {
 	if leoClient == (api.Client{}) {
 		var errs []error
 
-		config := configuration.GetConfig()
+		config := config.GetConfig()
 
 		errs, leoClient = api.NewClient(config.LinguaLeo.Email, config.LinguaLeo.Password)
 		if errs != nil {
