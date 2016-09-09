@@ -18,7 +18,7 @@ var kindlePathCmd = &cobra.Command{
 	Short: "Import from Kindle's vocabulary",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		const VOCABULARY_SUBPATH string = "system/vocabulary/vocab.db"
+		const vocabularySubPath string = "system/vocabulary/vocab.db"
 
 		kindleMountPoint = strings.TrimSpace(kindleMountPoint)
 
@@ -26,7 +26,7 @@ var kindlePathCmd = &cobra.Command{
 			log.Fatalln("Path to Kindle should not be empty")
 		}
 
-		database := path.Join(kindleMountPoint, VOCABULARY_SUBPATH)
+		database := path.Join(kindleMountPoint, vocabularySubPath)
 		if _, err := os.Stat(database); os.IsNotExist(err) {
 			log.Fatalln("Cannot find vocabulary in " + database)
 		}

@@ -10,7 +10,7 @@ var leoClient api.Client
 
 func getClient() api.Client {
 	if leoClient == (api.Client{}) {
-		var errs []error = nil
+		var errs []error
 
 		config := configuration.GetConfig()
 
@@ -22,6 +22,7 @@ func getClient() api.Client {
 	return leoClient
 }
 
+// GetTranslations return a translation for the word
 func GetTranslations(word string) api.Word {
 	errs, translations := getClient().GetTranslations(word)
 	if errs != nil {
@@ -30,6 +31,7 @@ func GetTranslations(word string) api.Word {
 	return translations
 }
 
+// AddWordWithTranslation add a word with already defined translation
 func AddWordWithTranslation(word string, translation string) []error {
 	errs, _ := getClient().AddWord(word, translation)
 	if errs != nil {
@@ -38,6 +40,7 @@ func AddWordWithTranslation(word string, translation string) []error {
 	return errs
 }
 
+// AddWord adds a word with first proposed translation
 func AddWord(word string) {
 	translations := GetTranslations(word)
 	if len(translations.Translations) == 0 {
@@ -50,6 +53,7 @@ func AddWord(word string) {
 	}
 }
 
+// AddWordWithTranslationAndContext adds a word with a context
 func AddWordWithTranslationAndContext(word string, translation string, context string) ([]error, api.Word) {
 	errs, result := getClient().AddWordWithContext(word, translation, context)
 	if errs != nil {
@@ -58,8 +62,9 @@ func AddWordWithTranslationAndContext(word string, translation string, context s
 	return errs, result
 }
 
-func DownloadPicture(url string, translate_id string) {
-	errs := getClient().DownloadPicture(url, translate_id)
+// DownloadPicture posts a picture to the translation
+func DownloadPicture(url string, translateID string) {
+	errs := getClient().DownloadPicture(url, translateID)
 	if errs != nil {
 		log.Fatalf("Cannot set picture: %v", errs)
 	}

@@ -1,11 +1,17 @@
 package api
 
 import (
+	"log"
 	"net/http/cookiejar"
 )
 
+// NewClient returns new instance of the API client
 func NewClient(email string, password string) ([]error, Client) {
-	cookieJar, _ := cookiejar.New(nil)
+	cookieJar, err := cookiejar.New(nil)
+	if err != nil {
+		log.Panic(err)
+	}
+
 	client := Client{
 		cookie: cookieJar,
 	}

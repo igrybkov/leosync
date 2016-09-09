@@ -18,26 +18,26 @@ doc:
 
 check: getdeps verifiers test
 
-verifiers: vet fmt lint cyclo deadcode spelling errcheck interfacer
+verifiers: vet fmt lint gocyclo deadcode spelling errcheck interfacer
 
 deadcode:
-	deadcode
+	@deadcode
 
 spelling:
-	misspell -error $(find . -iname '*.go' -not -path "./vendor/*")
+	@@find . -type f -name '*.go' -not -path "./vendor/*" | xargs -L1 misspell -error
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
 	@find . -type f -name '*.go' -not -path "./vendor/*" | xargs -L1 gofmt -d -s
 
 interfacer:
-	@interfacer ./... | grep -vE '^vendor/'
+	@go list ./... | grep -vE '^vendor/' | interfacer
 
 errcheck:
 	@go list ./... | grep -v 'vendor/' | xargs -L1 errcheck -blank
 
 gocyclo:
-	@gocyclo -over 1 $(find . -iname '*.go' -not -path "./vendor/*")
+	@find . -iname '*.go' -not -path "./vendor/*" | xargs -L1 gocyclo -over 10
 
 # https://github.com/golang/lint
 # go get github.com/golang/lint/golint
