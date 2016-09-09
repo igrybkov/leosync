@@ -1,4 +1,4 @@
-.PHONY: getdeps build build-multiarch doc check verifiers deadcode spelling fmt interfacer errcheck gocyclo lint run test vet
+.PHONY: getdeps build build-multiarch doc check verify deadcode spelling fmt interfacer errcheck gocyclo lint run test test-coverage vet vendor-update
 
 default: build
 
@@ -22,9 +22,9 @@ build-multiarch:
 doc:
 	godoc -http=:6060 -index
 
-check: getdeps verifiers test
+check: verify test
 
-verifiers: vet fmt lint gocyclo deadcode spelling errcheck interfacer
+verify: getdeps vet fmt lint gocyclo deadcode spelling errcheck interfacer
 
 deadcode:
 	@deadcode
@@ -56,7 +56,14 @@ run: build
 test:
 	go test ./...
 
-vendor_update:
+test-coverage:
+	@go get golang.org/x/tools/cmd/cover
+	@go get github.com/mattn/goveralls
+	go test -v -covermode=count -coverprofile=coverage.out
+    goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $(COVERALLS_TOKEN)
+
+
+vendor-update:
 	go get -u ./... && godep update ./...
 
 # http://godoc.org/code.google.com/p/go.tools/cmd/vet

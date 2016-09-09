@@ -8,6 +8,7 @@ services:
 
 script:
   - make check
+  - make test-coverage
 before_deploy:
   - make build-multiarch
   - sudo chown -R $USER:$USER ./dist/
@@ -22,3 +23,7 @@ deploy:
     repo: igrybkov/leosync
     tags: true
   skip_cleanup: true
+
+env:
+  global:
+    secure: OGmTMJIB+YWtw5CrI2C0SKxL1dSVw1KQnNpwfSsTUuRmu8a6PDotC24AXtZbtYKpx3FOmnS96agoJziWnGO5y4QsCI4kIHGWINFraboXpafo2B40jBcv/bBMA8hNNnCz/vQ4PdWsBSpS/9hPSjihTK1ZHsebmw1K0GSfG1J3DeYpY9VlxnhosAGWSrExvhg101KIKjhU3Y/jE86KR98fui+DoVnBCXU3Q4LReBmzDfxfKLcTKb2HZaELRtUEy8U+MoF1Xjf8cR/e+NsX7PUDszj5cRdvwVAj+6sJwMhZ4b9bTBSjK/xG26QT+pOwkXhnV9vBBVWzMapftEhCKxBkZgl6D3pTDKkJ7bENyei+3bPO+5MeCGTXCcOKC6qddwTj4kezF1Uy5pEwaPLnv73M2Ueytlk5lt9vp0FaQBlzDZK6rR8i5OJny0Mv3I0IF8QnWyHRFmeirE3jYr/jE5W8OA64fOg6VyYesYb1W+NFunT1oa/qrI6DKUN5S5c8Yxo+OKiC4K6BPimR4KPCqBT+Yl+ajEZ02WrLdbW/7OguVqK0iFPO4pSKXpZagpIwX8DAAuyV9tpMCsPwSszhDSECuek7yip89b0uuXW8deK8rksD+aQOnVvm5+KiQzRQgSZMW7+KLL0Clxa2HqQuO0y2glN7zENZLBBY+v8KoZIXUXs=
