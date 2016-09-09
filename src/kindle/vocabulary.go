@@ -2,22 +2,26 @@ package kindle
 
 import (
 	"github.com/jinzhu/gorm"
+	// import the sqlite bindings for the gorm
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 	"log"
 )
 
+// Word is a representation of a word in a Kindle database
 type Word struct {
-	Id   string `gorm:"primary_key"`
+	ID   string `gorm:"primary_key"`
 	Word string
 	Stem string
 	Lang string
 }
 
+// TableName returns a name of the table in a Kindle database
 func (Word) TableName() string {
 	return "WORDS"
 }
 
+// GetWords returns a list of the words from a Kindle database
 func GetWords(dbFile string) []Word {
 	db, err := gorm.Open("sqlite3", dbFile)
 	if err != nil {

@@ -19,3 +19,8 @@ indent_size = 4
 ; YAML
 [*.{yaml,yml}]
 indent_size = 2
+
+; Makefile
+[{Makefile, makefile, GNUmakefile}]
+indent_style = tab
+indent_size = 4

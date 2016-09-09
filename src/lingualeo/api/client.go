@@ -8,12 +8,13 @@ import (
 	"strings"
 )
 
+// Client is an API client
 type Client struct {
 	cookie http.CookieJar
 }
 
 func (c Client) get(url string, requestData interface{}, result interface{}) []error {
-	var errs []error = nil
+	var errs []error
 
 	resp, err := goreq.Request{
 		Uri:         url,
@@ -24,7 +25,12 @@ func (c Client) get(url string, requestData interface{}, result interface{}) []e
 		errs = append(errs, errors.New(err.Error()))
 		log.Fatalln(err.Error())
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		errs = append(errs, errors.New("Failed login: status code is "+resp.Status))
@@ -41,7 +47,7 @@ func (c Client) get(url string, requestData interface{}, result interface{}) []e
 
 func (c Client) post(url string, requestData interface{}) []error {
 
-	var errs []error = nil
+	var errs []error
 	req := goreq.Request{
 		Method:      "POST",
 		Body:        requestData,
@@ -56,7 +62,12 @@ func (c Client) post(url string, requestData interface{}) []error {
 		errs = append(errs, errors.New(err.Error()))
 		log.Fatalln(err.Error())
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		errs = append(errs, errors.New("Failed login: status code is "+resp.Status))
@@ -65,9 +76,10 @@ func (c Client) post(url string, requestData interface{}) []error {
 	return errs
 }
 
-func (c Client) DownloadPicture(url string, translate_id string) []error {
-	req := "url=" + url + "&translate_id=" + translate_id
-	errs := c.post(downloadPictureUrl, req)
+// DownloadPicture posts a picture to the translation
+func (c Client) DownloadPicture(url string, translateID string) []error {
+	req := "url=" + url + "&translate_id=" + translateID
+	errs := c.post(downloadPictureURL, req)
 	return errs
 }
 
@@ -78,7 +90,7 @@ func (c Client) authorize(email string, password string) []error {
 	}
 
 	var loginResp LoginResponse
-	errs := c.get(loginUrl, req, loginResp)
+	errs := c.get(loginURL, req, loginResp)
 	if strings.TrimSpace(loginResp.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Failed login: "+loginResp.ErrorMsg))
 	}
@@ -87,7 +99,7 @@ func (c Client) authorize(email string, password string) []error {
 }
 
 func (c Client) validateCredentials(email string, password string) []error {
-	var errs []error = nil
+	var errs []error
 
 	if strings.TrimSpace(email) == "" {
 		errs = append(errs, errors.New("Username should not be empty"))
@@ -98,13 +110,14 @@ func (c Client) validateCredentials(email string, password string) []error {
 	return errs
 }
 
+// GetTranslations returns translations for a word
 func (c Client) GetTranslations(word string) ([]error, Word) {
 	req := TranslationRequest{
 		Word: word,
 	}
 
 	translations := Word{}
-	errs := c.get(translateUrl, req, &translations)
+	errs := c.get(translateURL, req, &translations)
 	if strings.TrimSpace(translations.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Something went wrong: "+translations.ErrorMsg))
 	}
@@ -112,6 +125,7 @@ func (c Client) GetTranslations(word string) ([]error, Word) {
 	return errs, translations
 }
 
+// AddWord posts new word to the API
 func (c Client) AddWord(word, translation string) ([]error, Word) {
 	req := AddWordRequest{
 		Word:        word,
@@ -119,7 +133,7 @@ func (c Client) AddWord(word, translation string) ([]error, Word) {
 	}
 
 	var result Word
-	errs := c.get(addWordUrl, req, &result)
+	errs := c.get(addWordURL, req, &result)
 	if strings.TrimSpace(result.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Something went wrong: "+result.ErrorMsg))
 	}
@@ -127,15 +141,17 @@ func (c Client) AddWord(word, translation string) ([]error, Word) {
 	return errs, result
 }
 
+// AddWordWithContext add a word with a context
+// ToDo: Rewrite the method to combine it with an AddWord call
 func (c Client) AddWordWithContext(word, translation string, context string) ([]error, Word) {
 	req := AddWordWithContextRequest{
 		Word:        word,
 		Translation: translation,
-		Context: context,
+		Context:     context,
 	}
 
 	var result Word
-	errs := c.get(addWordUrl, req, &result)
+	errs := c.get(addWordURL, req, &result)
 	if strings.TrimSpace(result.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Something went wrong: "+result.ErrorMsg))
 	}

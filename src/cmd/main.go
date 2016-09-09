@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/gosuri/cmdns"
+	"github.com/igrybkov/cmdns"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -14,7 +14,7 @@ var (
 	filePath string
 )
 
-// This represents the base command when called without any subcommands
+// RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:   "leosync",
 	Short: "LeoSync is an app to sync words and translations to/from LinguaLeo",
@@ -44,7 +44,10 @@ func init() {
 
 	cobra.OnInitialize(initConfig)
 	// Enable namespacing
-	cmdns.Namespace(RootCmd)
+	err := cmdns.Namespace(RootCmd)
+	if err != nil {
+		panic(err)
+	}
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports Persistent Flags, which, if defined here,

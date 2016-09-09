@@ -41,7 +41,10 @@ var initCmd = &cobra.Command{
 
 		getInputValue := func(fieldName string, currentValue string) string {
 			fmt.Print("Enter " + fieldName + " (leave empty to use current value: '" + currentValue + "'): ")
-			input, _ = reader.ReadString('\n')
+			input, err = reader.ReadString('\n')
+			if err != nil {
+				panic(err)
+			}
 			input = strings.TrimSpace(input)
 			result := currentValue
 			if input != "" {
@@ -63,9 +66,17 @@ var initCmd = &cobra.Command{
 			log.Fatalln(err.Error())
 		}
 
-		defer f.Close()
+		defer func() {
+			err := f.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
-		f.WriteString(string(b))
+		_, err = f.WriteString(string(b))
+		if err != nil {
+			panic(err)
+		}
 	},
 }
 

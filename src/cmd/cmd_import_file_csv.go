@@ -21,7 +21,12 @@ var importFileCsvCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer file.Close()
+		defer func() {
+			err := file.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 
 		r := csv.NewReader(file)
 		r.Comma = ';'
@@ -49,10 +54,10 @@ var importFileCsvCmd = &cobra.Command{
 				log.Println("+context: " + context)
 			}
 
-			pic_url := strings.TrimSpace(record[2])
-			if len(pic_url) > 5 {
-				leo.DownloadPicture(pic_url, strconv.Itoa(result.TranslateId))
-				log.Println("+picture: " + pic_url)
+			imgURL := strings.TrimSpace(record[2])
+			if len(imgURL) > 5 {
+				leo.DownloadPicture(imgURL, strconv.Itoa(result.TranslateID))
+				log.Println("+picture: " + imgURL)
 				time.Sleep(1 * time.Second) //anti-ban delay :)
 			}
 

@@ -10,10 +10,12 @@ type linguaLeo struct {
 	Password string
 }
 
+// Config is a representation of credentials for LinguaLeo
 type Config struct {
 	LinguaLeo linguaLeo
 }
 
+// GetConfig return configuration instance
 func GetConfig() Config {
 	config := Config{
 		LinguaLeo: linguaLeo{
