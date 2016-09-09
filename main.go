@@ -22,7 +22,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/igrybkov/leosync/src/cmd"
+	"github.com/igrybkov/leosync/cmd"
 	"os"
 )
 
