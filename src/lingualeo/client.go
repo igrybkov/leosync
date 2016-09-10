@@ -1,19 +1,22 @@
-package api
+package lingualeo
 
 import (
 	"errors"
 	"github.com/franela/goreq"
+	"github.com/igrybkov/leosync/src/lingualeo/request"
+	"github.com/igrybkov/leosync/src/lingualeo/response"
 	"log"
 	"net/http"
+	"net/http/cookiejar"
 	"strings"
 )
 
 // Client is an API client
-type Client struct {
+type apiClient struct {
 	cookie http.CookieJar
 }
 
-func (c Client) get(url string, requestData interface{}, result interface{}) []error {
+func (c apiClient) get(url string, requestData interface{}, result interface{}) []error {
 	var errs []error
 
 	resp, err := goreq.Request{
@@ -45,7 +48,7 @@ func (c Client) get(url string, requestData interface{}, result interface{}) []e
 	return errs
 }
 
-func (c Client) post(url string, requestData interface{}) []error {
+func (c apiClient) post(url string, requestData interface{}) []error {
 
 	var errs []error
 	req := goreq.Request{
@@ -77,19 +80,19 @@ func (c Client) post(url string, requestData interface{}) []error {
 }
 
 // DownloadPicture posts a picture to the translation
-func (c Client) DownloadPicture(url string, translateID string) []error {
+func (c apiClient) DownloadPicture(url string, translateID string) []error {
 	req := "url=" + url + "&translate_id=" + translateID
 	errs := c.post(downloadPictureURL, req)
 	return errs
 }
 
-func (c Client) authorize(email string, password string) []error {
-	req := LoginRequest{
+func (c apiClient) authorize(email string, password string) []error {
+	req := request.LoginRequest{
 		Email:    email,
 		Password: password,
 	}
 
-	var loginResp LoginResponse
+	var loginResp response.LoginResponse
 	errs := c.get(loginURL, req, loginResp)
 	if strings.TrimSpace(loginResp.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Failed login: "+loginResp.ErrorMsg))
@@ -98,7 +101,7 @@ func (c Client) authorize(email string, password string) []error {
 	return errs
 }
 
-func (c Client) validateCredentials(email string, password string) []error {
+func (c apiClient) validateCredentials(email string, password string) []error {
 	var errs []error
 
 	if strings.TrimSpace(email) == "" {
@@ -111,12 +114,12 @@ func (c Client) validateCredentials(email string, password string) []error {
 }
 
 // GetTranslations returns translations for a word
-func (c Client) GetTranslations(word string) ([]error, Word) {
-	req := TranslationRequest{
+func (c apiClient) GetTranslations(word string) ([]error, response.Word) {
+	req := request.TranslationRequest{
 		Word: word,
 	}
 
-	translations := Word{}
+	translations := response.Word{}
 	errs := c.get(translateURL, req, &translations)
 	if strings.TrimSpace(translations.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Something went wrong: "+translations.ErrorMsg))
@@ -126,13 +129,13 @@ func (c Client) GetTranslations(word string) ([]error, Word) {
 }
 
 // AddWord posts new word to the API
-func (c Client) AddWord(word, translation string) ([]error, Word) {
-	req := AddWordRequest{
+func (c apiClient) AddWord(word, translation string) ([]error, response.Word) {
+	req := request.AddWordRequest{
 		Word:        word,
 		Translation: translation,
 	}
 
-	var result Word
+	var result response.Word
 	errs := c.get(addWordURL, req, &result)
 	if strings.TrimSpace(result.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Something went wrong: "+result.ErrorMsg))
@@ -143,18 +146,33 @@ func (c Client) AddWord(word, translation string) ([]error, Word) {
 
 // AddWordWithContext add a word with a context
 // ToDo: Rewrite the method to combine it with an AddWord call
-func (c Client) AddWordWithContext(word, translation string, context string) ([]error, Word) {
-	req := AddWordWithContextRequest{
+func (c apiClient) AddWordWithContext(word, translation string, context string) ([]error, response.Word) {
+	req := request.AddWordWithContextRequest{
 		Word:        word,
 		Translation: translation,
 		Context:     context,
 	}
 
-	var result Word
+	var result response.Word
 	errs := c.get(addWordURL, req, &result)
 	if strings.TrimSpace(result.ErrorMsg) != "" {
 		errs = append(errs, errors.New("Something went wrong: "+result.ErrorMsg))
 	}
 
 	return errs, result
+}
+
+// NewClient returns new instance of the API client
+func newClient(email string, password string) ([]error, apiClient) {
+	cookieJar, err := cookiejar.New(nil)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	client := apiClient{
+		cookie: cookieJar,
+	}
+	errs := client.authorize(email, password)
+
+	return errs, client
 }

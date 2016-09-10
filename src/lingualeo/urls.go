@@ -1,4 +1,4 @@
-package api
+package lingualeo
 
 const (
 	//userDictUrl  = "http://lingualeo.com/userdict/json"

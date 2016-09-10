@@ -1,4 +1,4 @@
-package api
+package request
 
 // LoginRequest is a request for Login
 type LoginRequest struct {

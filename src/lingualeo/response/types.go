@@ -1,4 +1,4 @@
-package api
+package response
 
 type apiResponse struct {
 	ErrorMsg string `json:"error_msg"`
