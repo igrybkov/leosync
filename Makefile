@@ -1,18 +1,13 @@
-.PHONY: getdeps build build-multiarch doc check verify deadcode spelling fmt interfacer errcheck gocyclo lint run test test-coverage vet vendor-update
+.PHONY: build build-multiarch doc check deadcode spelling fmt interfacer errcheck gocyclo lint run test test-coverage vet vendor-update
 
 default: build
-
-getdeps:
-	@go get github.com/golang/lint/golint && echo "Installed golint:"
-	@go get github.com/fzipp/gocyclo && echo "Installed gocyclo:"
-	@go get github.com/remyoudompheng/go-misc/deadcode && echo "Installed deadcode:"
-	@go get github.com/client9/misspell/cmd/misspell && echo "Installed misspell:"
-	@go get github.com/mvdan/interfacer/cmd/interfacer && echo "Installed interfacer:"
-	@go get github.com/kisielk/errcheck && echo "Installed errcheck:"
 
 build:
 	mkdir -p ./bin/
 	go build -v -o ./bin/leosync .
+
+run: build
+	./bin/leosync
 
 build-multiarch:
 	go get github.com/karalabe/xgo
@@ -22,36 +17,42 @@ build-multiarch:
 doc:
 	godoc -http=:6060 -index
 
-check: verify test
-
-verify: getdeps vet fmt lint gocyclo deadcode spelling errcheck interfacer
+check: vet fmt lint gocyclo deadcode spelling errcheck interfacer
 
 deadcode:
+	@go get github.com/remyoudompheng/go-misc/deadcode && echo "Running deadcode..."
 	@deadcode
 
 spelling:
+	@go get github.com/client9/misspell/cmd/misspell && echo "Running misspell..."
 	@find . -type f -name '*.go' -not -path "./vendor/*" | xargs -L1 misspell -error
 
 # http://golang.org/cmd/go/#hdr-Run_gofmt_on_package_sources
 fmt:
 	@find . -type f -name '*.go' -not -path "./vendor/*" | xargs -L1 gofmt -d -s
 
+fmt-write:
+	@find . -type f -name '*.go' -not -path "./vendor/*" | xargs -L1 gofmt -w
+
+fix: fmt-write
+
 interfacer:
+	@go get github.com/mvdan/interfacer/cmd/interfacer && echo "Running interfacer..."
 	@go list ./... | grep -vE '^vendor/' | interfacer
 
 errcheck:
+	@go get github.com/kisielk/errcheck && echo "Running errcheck..."
 	@go list ./... | grep -v 'vendor/' | xargs -L1 errcheck -blank
 
 gocyclo:
+	@go get github.com/fzipp/gocyclo && echo "Running gocyclo..."
 	@find . -iname '*.go' -not -path "./vendor/*" | xargs -L1 gocyclo -over 10
 
 # https://github.com/golang/lint
 # go get github.com/golang/lint/golint
 lint:
+	@go get github.com/golang/lint/golint && echo "Running golint..."
 	@find . -type f -name '*.go' -not -path "./vendor/*" | xargs -L1 golint -set_exit_status
-
-run: build
-	./bin/leosync
 
 test:
 	go test ./...
@@ -59,8 +60,7 @@ test:
 test-coverage:
 	@go get golang.org/x/tools/cmd/cover
 	@go get github.com/mattn/goveralls
-	go test -v -covermode=count -coverprofile=coverage.out
-    goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $(COVERALLS_TOKEN)
+	goveralls -service=travis-ci
 
 
 vendor-update:
