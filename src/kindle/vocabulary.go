@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
+	// import the sqlite bindings for the gorm
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
