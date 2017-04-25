@@ -1,11 +1,10 @@
 package kindle
 
 import (
-	"github.com/jinzhu/gorm"
-	// import the sqlite bindings for the gorm
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
-
 	"log"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 // Word is a representation of a word in a Kindle database
