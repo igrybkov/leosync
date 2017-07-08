@@ -2,21 +2,63 @@ package cmd
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io"
 	"log"
 	"os"
-	"strconv"
 	"strings"
-	"time"
 
-	leo "github.com/igrybkov/leosync/src/lingualeo"
+	"github.com/icza/srtgears"
 	"github.com/spf13/cobra"
 )
 
 var importFileSrtCmd = &cobra.Command{
-	Use:   "csv",
-	Short: "Import from CSV file ('word;translation' per line)",
+	Use:   "srt",
+	Short: "Import from SRT file",
 	Run: func(cmd *cobra.Command, args []string) {
+
+		subsPack, err := srtgears.ReadSrtFile(filePath)
+
+		subsPack.RemoveControl()
+		subsPack.RemoveHI()
+		subsPack.RemoveHTML()
+
+		allSubsSet := []string{}
+
+		for _, subs := range subsPack.Subs {
+			allSubsSet = append(allSubsSet, strings.Join(subs.Lines, " "))
+		}
+
+		//allText := strings.Join(allSubsSet, " ")
+
+		//sentenceTokenizer, err := english.NewSentenceTokenizer(nil)
+		//if err != nil {
+		//	panic(err)
+		//}
+
+		//sentencesSet := sentenceTokenizer.Tokenize(allText)
+		//for _, s := range sentencesSet {
+		//fmt.Println(strings.TrimSpace(s.Text))
+		//}
+
+		leo := getLeoClient()
+		wl, err := leo.GetList()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		for _, s := range wl {
+			fmt.Println(strings.TrimSpace(s.Word))
+		}
+
+		//wordTokenizer := english.NewWordTokenizer(sentences.NewPunctStrings())
+		//wordsSet := wordTokenizer.Tokenize(allText, false)
+		//for _, s := range wordsSet {
+		//	fmt.Println(strings.TrimSpace(s.Tok))
+		//}
+
+		log.Fatalln("lol")
+
 		file, err := os.Open(filePath)
 		if err != nil {
 			log.Fatal(err)
@@ -31,11 +73,11 @@ var importFileSrtCmd = &cobra.Command{
 		r := csv.NewReader(file)
 		r.Comma = ';'
 		var word string
-		var translation string
-		var context string
+
+		//conf := settings.GetSettings()
+		//leoClient, err := lingualeo.New(conf.LinguaLeo)
 
 		for {
-			record, err := r.Read()
 			if err == io.EOF {
 				break
 			}
@@ -43,24 +85,34 @@ var importFileSrtCmd = &cobra.Command{
 				log.Fatal(err)
 			}
 
-			word = strings.TrimSpace(record[0])
-			translation = strings.TrimSpace(record[1])
-			context = strings.TrimSpace(record[4])
-
-			_, result := leo.AddWordWithTranslationAndContext(word, translation, context)
-			log.Println("Imported: " + word + " = " + translation)
-
-			if context != "" {
-				log.Println("+context: " + context)
-			}
-
-			imgURL := strings.TrimSpace(record[2])
-			if len(imgURL) > 5 {
-				leo.DownloadPicture(imgURL, strconv.Itoa(result.TranslateID))
-				log.Println("+picture: " + imgURL)
-				time.Sleep(1 * time.Second) //anti-ban delay :)
-			}
-
+			func() {
+				err = func() (err error) {
+					//err, result := leoClient.AddWord(
+					//	lingualeo.AddWordRequest{
+					//		Word:        word,
+					//		Translation: translation,
+					//		Context:     context,
+					//	},
+					//)
+					//
+					//if err != nil {
+					//	return err
+					//}
+					//
+					//log.Println("Imported: " + word + " = " + translation)
+					//
+					//imgURL := strings.TrimSpace(record[2])
+					//if len(imgURL) > 5 {
+					//	lingualeo.DownloadPicture(imgURL, strconv.Itoa(result.TranslateID))
+					//	log.Println("+picture: " + imgURL)
+					//	time.Sleep(1 * time.Second) //anti-ban delay :)
+					//}
+					return err
+				}()
+				if err != nil {
+					log.Println("Can't add the word \"" + word + "\": " + err.Error())
+				}
+			}()
 		}
 
 	},

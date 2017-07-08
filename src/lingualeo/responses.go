@@ -1,4 +1,4 @@
-package api
+package lingualeo
 
 type apiResponse struct {
 	ErrorMsg string `json:"error_msg"`

@@ -2,10 +2,11 @@ package api
 
 import (
 	"errors"
-	"github.com/franela/goreq"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/franela/goreq"
 )
 
 // Client is an API client
@@ -13,7 +14,7 @@ type Client struct {
 	cookie http.CookieJar
 }
 
-func (c Client) get(url string, requestData interface{}, result interface{}) []error {
+func (c Client) get(url string, requestData interface{}, result *interface{}) []error {
 	var errs []error
 
 	resp, err := goreq.Request{
@@ -36,7 +37,7 @@ func (c Client) get(url string, requestData interface{}, result interface{}) []e
 		errs = append(errs, errors.New("Failed login: status code is "+resp.Status))
 	}
 
-	err = resp.Body.FromJsonTo(&result)
+	err = resp.Body.FromJsonTo(result)
 	if err != nil {
 		errs = append(errs, errors.New(err.Error()))
 		log.Println(err.Error())
@@ -90,12 +91,12 @@ func (c Client) authorize(email string, password string) []error {
 	}
 
 	var loginResp LoginResponse
-	errs := c.get(loginURL, req, loginResp)
+	err := c.get(loginURL, req, loginResp)
 	if strings.TrimSpace(loginResp.ErrorMsg) != "" {
-		errs = append(errs, errors.New("Failed login: "+loginResp.ErrorMsg))
+		err = append(errs, errors.New("Failed login: "+loginResp.ErrorMsg))
 	}
 
-	return errs
+	return err
 }
 
 func (c Client) validateCredentials(email string, password string) []error {

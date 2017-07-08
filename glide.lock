@@ -1,5 +1,5 @@
-hash: d73da7abb6a6c354d9dc45ee5267421d9725881642dd8d8e4424c70ba0fefca2
-updated: 2017-04-26T00:18:10.821589428+03:00
+hash: a543f38151cd059cec543f21dd5c7cadeba612439d8adcc7d45c5dd8c2d60b38
+updated: 2017-05-09T01:18:55.617703822+03:00
 imports:
 - name: github.com/franela/goreq
   version: fc08df6ca2d4a0d1a5ae24739aa268863943e723
@@ -77,6 +77,11 @@ imports:
   subpackages:
   - transform
   - unicode/norm
+- name: gopkg.in/neurosnap/sentences.v1
+  version: a7f18ead1433a139742a8b42ce7a059cfb484d60
+  subpackages:
+  - data
+  - english
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
 testImports: []

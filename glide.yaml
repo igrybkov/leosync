@@ -78,3 +78,7 @@ import:
   - unicode/norm
 - package: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+- package: gopkg.in/neurosnap/sentences.v1
+  version: ^1.0.6
+  subpackages:
+  - english

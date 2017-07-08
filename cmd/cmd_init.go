@@ -5,14 +5,14 @@ import (
 
 	"bufio"
 	"fmt"
-	"github.com/igrybkov/leosync/config"
+	"log"
+	"os"
+	"strings"
+
 	home "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
-	"log"
-	"os"
-	"strings"
 )
 
 var initCmd = &cobra.Command{
@@ -21,7 +21,7 @@ var initCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
 
-		configuration := config.GetConfig()
+		configuration := getConfig()
 
 		file := cfgFile
 

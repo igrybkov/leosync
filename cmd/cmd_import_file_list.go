@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	leo "github.com/igrybkov/leosync/src/lingualeo"
+	//leo "github.com/igrybkov/leosync/src/lingualeo"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +30,7 @@ var importFileListCmd = &cobra.Command{
 
 		for scanner.Scan() {
 			word = strings.TrimSpace(scanner.Text())
-			leo.AddWord(word)
+			//leo.AddWord(word)
 			log.Println("Imported: " + word)
 		}
 

@@ -6,7 +6,7 @@ import (
 )
 
 // NewClient returns new instance of the API client
-func NewClient(email string, password string) ([]error, Client) {
+func NewClient(email string, password string) (error, *Client) {
 	cookieJar, err := cookiejar.New(nil)
 	if err != nil {
 		log.Panic(err)
@@ -15,7 +15,7 @@ func NewClient(email string, password string) ([]error, Client) {
 	client := Client{
 		cookie: cookieJar,
 	}
-	errs := client.authorize(email, password)
+	err := client.authorize(email, password)
 
-	return errs, client
+	return err, &client
 }

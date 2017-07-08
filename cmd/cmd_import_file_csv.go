@@ -2,15 +2,13 @@ package cmd
 
 import (
 	"encoding/csv"
-	"github.com/spf13/cobra"
 	"io"
 	"log"
 	"os"
-	"strconv"
 	"strings"
-	"time"
 
-	leo "github.com/igrybkov/leosync/src/lingualeo"
+	"github.com/igrybkov/leosync/model"
+	"github.com/spf13/cobra"
 )
 
 var importFileCsvCmd = &cobra.Command{
@@ -34,6 +32,8 @@ var importFileCsvCmd = &cobra.Command{
 		var translation string
 		var context string
 
+		leoClient := getLeoClient()
+
 		for {
 			record, err := r.Read()
 			if err == io.EOF {
@@ -45,21 +45,29 @@ var importFileCsvCmd = &cobra.Command{
 
 			word = strings.TrimSpace(record[0])
 			translation = strings.TrimSpace(record[1])
-			context = strings.TrimSpace(record[4])
+			//context = strings.TrimSpace(record[4])
 
-			_, result := leo.AddWordWithTranslationAndContext(word, translation, context)
+			wordData := model.Word{
+				Word: word,
+				//Translation: translation,
+				Context: context,
+			}
+			err = leoClient.Add(&wordData)
+			if err != nil {
+				log.Println(err)
+			}
 			log.Println("Imported: " + word + " = " + translation)
 
 			if context != "" {
 				log.Println("+context: " + context)
 			}
 
-			imgURL := strings.TrimSpace(record[2])
-			if len(imgURL) > 5 {
-				leo.DownloadPicture(imgURL, strconv.Itoa(result.TranslateID))
-				log.Println("+picture: " + imgURL)
-				time.Sleep(1 * time.Second) //anti-ban delay :)
-			}
+			//imgURL := strings.TrimSpace(record[2])
+			//if len(imgURL) > 5 {
+			//	leo.DownloadPicture(imgURL, strconv.Itoa(result.TranslateID))
+			//	log.Println("+picture: " + imgURL)
+			//	time.Sleep(1 * time.Second) //anti-ban delay :)
+			//}
 
 		}
 

@@ -22,8 +22,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/igrybkov/leosync/cmd"
 	"os"
+
+	"github.com/igrybkov/leosync/cmd"
 )
 
 func main() {

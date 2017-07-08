@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/igrybkov/cmdns"
+	"github.com/igrybkov/leosync/config"
+	"github.com/igrybkov/leosync/model"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -77,4 +79,17 @@ func initConfig() {
 	} else {
 		cfgFile = "~/.config/.leosync.yaml"
 	}
+}
+
+func getConfig() config.ApplicationConfig {
+	conf := config.ApplicationConfig{}
+	viper.Unmarshal(&conf)
+	//Email:    cast.ToString(viper.Get("lingualeo.email")),
+	//Password: cast.ToString(viper.Get("lingualeo.password")),
+	return conf
+}
+
+func getLeoClient() model.DictionaryStorageInterface {
+	conf := getConfig()
+	return model.NewLingualeoStorage(conf.LinguaLeo.Email, conf.LinguaLeo.Password)
 }
